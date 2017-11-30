@@ -1,0 +1,32 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+group = 'sjrating'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+mainClassName = 'sjrating.Application'
+
+jar {
+    manifest {
+        attributes('Main-Class': mainClassName)
+    }
+}
+
+dependencies {
+    compile 'org.jsoup:jsoup:1.11.2'
+    compile 'mysql:mysql-connector-java:6.0.6'
+}
+
+startScripts {
+    classpath += files('src/dist/config')
+    doLast {
+        def windowsScriptFile = file getWindowsScript()
+        def unixScriptFile    = file getUnixScript()
+        windowsScriptFile.text = windowsScriptFile.text.replace('%APP_HOME%\\lib\\config', '%APP_HOME%\\config')
+        unixScriptFile.text  = unixScriptFile.text.replace('$APP_HOME/lib/config', '$APP_HOME/config')
+    }
+}
